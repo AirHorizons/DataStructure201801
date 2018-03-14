@@ -47,7 +47,11 @@ public class BigInteger
         // implement here
         // parse input
         // using regex is allowed
- 
+        
+        // single number = "^[+-]*[1-9][0-9]*$"
+	// input.replaceAll("\\s+", "");
+        // expression = "^[+-]*[1-9][0-9]*[+-*][+-]*[1-9][0-9]*$"
+	 
         // One possible implementation
         // BigInteger num1 = new BigInteger(arg1);
         // BigInteger num2 = new BigInteger(arg2);
