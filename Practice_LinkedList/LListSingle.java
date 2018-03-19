@@ -37,20 +37,32 @@ public class LListSingle implements LListInterface {
       Node prev = find(index-1);
       Node cur = prev.getNext();
       prev.setNext(cur.getNext());
+      length--;
     }
     else {
       throw new IndexOutOfBoundaryException("Index out of boundary.\n");
     }
   }
 
-  public Object get(int index){
+  public Object get(int index) throws IndexOutOfBoundaryException {
     if ((index >= 0 && index <= length)) {
       Node cur = find(index);
       return cur.getItem();
     }
     else {
-      throw new IndexOutOfBoundaryException("Index out of buondary.\n");
+      throw new IndexOutOfBoundaryException("Index out of boundary.\n");
     }
   }
 
+  public void removeAll() {
+    for (int i=0; i<length; i++) {
+      try {
+        remove(0);
+      }
+      catch (IndexOutOfBoundaryException e){
+        System.err.println(e.getMessage());
+      }
+    }
+    length = 0;
+  }
 }
