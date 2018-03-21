@@ -10,9 +10,10 @@ public class BigInteger
     public static final String MSG_INVALID_INPUT = "입력이 잘못되었습니다.";
  
     // implement this
-    public static final Pattern EXPRESSION_PATTERN = Pattern.compile("");
- 
- 
+    public static final Pattern EXPRESSION_PATTERN = Pattern.compile("^([+-]?[1-9][0-9]*)([+-\\.\\*])([+-]?[1-9][0-9]*)$");
+    private char[] number;
+    private char sign;
+
     public BigInteger(int i)
     {
     }
@@ -23,6 +24,16 @@ public class BigInteger
  
     public BigInteger(String s)
     {
+    }
+
+    public char[] getNumber()
+    {
+      return number;
+    }
+
+    public char getSign()
+    {
+      return sign;
     }
  
     public BigInteger add(BigInteger big)
@@ -49,9 +60,14 @@ public class BigInteger
         // using regex is allowed
         
         // single number = "^[+-]*[1-9][0-9]*$"
-	// input.replaceAll("\\s+", "");
-        // expression = "^[+-]*[1-9][0-9]*[+-*][+-]*[1-9][0-9]*$"
-	 
+	      input.replaceAll("\\s+", "");
+        Matcher matcher = EXPRESSION_PATTERN.matcher(input);
+
+	      StringBuilder expr = new StringBuilder(); 
+        BigInteger num1 = new BigInteger(matcher.group(1));
+        BigInteger num2 = new BigInteger(matcher.group(3));
+        char operator = matcher.group(2).charAt(0);
+        
         // One possible implementation
         // BigInteger num1 = new BigInteger(arg1);
         // BigInteger num2 = new BigInteger(arg2);
