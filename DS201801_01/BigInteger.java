@@ -16,14 +16,51 @@ public class BigInteger
 
     public BigInteger(int i)
     {
+      sign = (i>0)?'+':'-';
+      number = new char[digits(i)];
+      for (int index=0;i!=0;i/=10,index++){
+        number[index] = Character.forDigit(i, 10); // store digits into reverse order 
+      }
     }
  
     public BigInteger(int[] num1)
     {
+      // what for?
     }
  
     public BigInteger(String s)
     {
+      int i; // var for iteration
+
+      if (s.charAt(0)=='-') sign = '-';
+      else sign = '+';
+
+      if (Character.isDigit(s.charAt(0)))
+      {
+        number = new char[s.length()];
+        for (i=0;i<s.length();i++)
+        {
+          number[i] = s.charAt(s.length()-1-i);
+        }
+      }
+      else
+      {
+        number = new char[s.length()-1];
+        for (i=1;i<s.length();i++)
+        {
+          number[i] = s.charAt(s.length()-i);
+        }
+      }
+    }
+
+    private int digits(int i)
+    {
+      int d;
+      for (d=0; i!=0; i/=10)
+      {
+        d = d+1;
+      }
+      return d;
     }
 
     public char[] getNumber()
@@ -51,6 +88,7 @@ public class BigInteger
     @Override
     public String toString()
     {
+      return "";
     }
  
     static BigInteger evaluate(String input) throws IllegalArgumentException
