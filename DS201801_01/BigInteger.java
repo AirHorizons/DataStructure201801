@@ -24,12 +24,18 @@ public class BigInteger
       }
     }
  
-    /*
     public BigInteger(int[] num1)
     {
-      // what for?
+      // sign bit is stored at the first element of the int array, and rest of them are number part.
+      int index;
+      
+      sign = (num1[0] >= 0) ? '+' : '-';
+      number = new char[num1.length-1];
+      for (index=0;index<number.length;index++)
+      {
+        number[index] = Character.forDigit(num1[num1.length-1-index], 10);
+      }
     }
-    */
  
     public BigInteger(String s)
     {
@@ -81,10 +87,20 @@ public class BigInteger
     {
       return new BigInteger(0);
     }
+
+    public BigInteger add_numbers(BigInteger big, char sign)
+    {
+
+    }
  
     public BigInteger subtract(BigInteger big)
     {
       return new BigInteger(0);
+    }
+
+    public BigInteger subtract_numbers(BigInteger big, char sign)
+    {
+
     }
 
     private int compare(BigInteger big) // return 1 when this is bigger, -1 when that, 0 when same
