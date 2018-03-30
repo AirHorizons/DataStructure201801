@@ -108,6 +108,12 @@ public class BigInteger
     {
       return new BigInteger(0);
     }
+
+    public char multiplySign(BigInteger big)
+    {
+      if (sign == big.getSign()) return '+';
+      else return '-';  
+    }
  
     @Override
     public String toString()
@@ -124,6 +130,8 @@ public class BigInteger
         // implement here
         // parse input
         // using regex is allowed
+        BigInteger num1 = new BigInteger(0), num2 = new BigInteger(0); //Initiallize by empty value
+        char operator = ' '; //Samw Here
         
         // single number = "^[+-]*[1-9][0-9]*$"
 	      input = input.replaceAll("\\s+", "");
@@ -133,19 +141,15 @@ public class BigInteger
         while (matcher.find())
         {
 	         StringBuilder expr = new StringBuilder(); 
-           BigInteger num1 = new BigInteger(matcher.group(1));
-           BigInteger num2 = new BigInteger(matcher.group(3));
-           char operator = matcher.group(2).charAt(0);
+           num1 = new BigInteger(matcher.group(1));
+           num2 = new BigInteger(matcher.group(3));
+           operator = matcher.group(2).charAt(0);
         }
         
-        // One possible implementation
-        // BigInteger num1 = new BigInteger(arg1);
-        // BigInteger num2 = new BigInteger(arg2);
-        // BigInteger result = num1.add(num2);
-        // return result;
-        //
-
-        return new BigInteger(10000000);
+        if (operator == '+') return num1.add(num2);
+        else if (operator == '-') return num1.subtract(num2);
+        else if (operator == '*') return num1.multiply(num2);
+        else throw new IllegalArgumentException();
     }
  
     public static void main(String[] args) throws Exception
