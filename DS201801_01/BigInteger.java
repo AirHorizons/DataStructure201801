@@ -62,6 +62,12 @@ public class BigInteger
       }
     }
 
+    public BigInteger(char sign, char[] number)
+    {
+      this.sign = sign;
+      this.number = number;
+    }
+
     private int digits(int i)
     {
       int d;
