@@ -89,24 +89,56 @@ public class BigInteger
       return sign;
     }
  
-    public BigInteger add(BigInteger big)
+    public BigInteger add(BigInteger big) throws IllegalArgumentException
     {
-      return new BigInteger(0);
+      if (this.getSign() == big.getSign()) return add_numbers(big, this.sign);
+      else
+        switch(compare(big))
+        {
+          case 1:
+              return this.subtract_numbers(big, this.getSign());
+          case -1:
+              return big.subtract_numbers(this, big.getSign());
+          case 0:
+              return new BigInteger(0);
+          default:
+            throw new IllegalArgumentException("Invalid compare() return value.");
+        }
     }
 
-    public BigInteger add_numbers(BigInteger big, char sign)
+    public BigInteger add_numbers(BigInteger big, char sign) // This is bigger than that
     {
+      String newnum = "";
+      
+      newnum = newnum.concat(Character.toString(sign));
 
+      return new BigInteger(newnum);
     }
  
     public BigInteger subtract(BigInteger big)
     {
-      return new BigInteger(0);
+      if (this.getSign() != big.getSign()) return add_numbers(big, this.sign);
+      else
+        switch(compare(big))
+        {
+          case 1:
+            return this.subtract_numbers(big, this.getSign());
+          case -1:
+              return big.subtract_numbers(this, big.getSign());
+          case 0:
+              return new BigInteger(0);
+          default:
+            throw new IllegalArgumentException("Invalid compare() return value.");
+        }
     }
 
-    public BigInteger subtract_numbers(BigInteger big, char sign)
+    public BigInteger subtract_numbers(BigInteger big, char sign) // This is bigger than that
     {
+      String newnum = "";
 
+      newnum = newnum.concat(Character.toString(sign));
+
+      return new BigInteger(newnum);
     }
 
     private int compare(BigInteger big) // return 1 when this is bigger, -1 when that, 0 when same
