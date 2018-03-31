@@ -8,9 +8,12 @@ public class BigInteger
 {
     public static final String QUIT_COMMAND = "quit";
     public static final String MSG_INVALID_INPUT = "입력이 잘못되었습니다.";
+    public static final String MSG_INVALID_OPERATOR = "연산자 입력이 잘못되었습니다..";
+    public static final String MSG_INVALID_COMPARE = "피연산자간 절대값 비교가 잘못되었습니다.";
  
     // implement this
-    public static final Pattern EXPRESSION_PATTERN = Pattern.compile("^([-\\+]?[1-9][0-9]*)([-\\+\\*])([-\\+]?[1-9][0-9]*)$");
+    public static final Pattern EXPRESSION_PATTERN = Pattern.compile("([-\\+]?[0-9][0-9]*)([-\\+\\*])([-\\+]?[0-9][0-9]*)");
+    public static final Pattern FRONT_ZERO_PATTERN = Pattern.compile("(0*)([1-9]?[0-9]*)");
     private char[] number;
     private char sign;
 
@@ -88,10 +91,25 @@ public class BigInteger
     {
       return sign;
     }
+
  
     public BigInteger add(BigInteger big) throws IllegalArgumentException
     {
-      if (this.getSign() == big.getSign()) return add_numbers(big, this.sign);
+      if (this.getSign() == big.getSign())
+      {
+        switch(compare(big))
+        {
+          case 1:
+              return this.add_numbers(big, this.getSign());
+          case -1:
+              return big.add_numbers(this, big.getSign());
+          case 0:
+              return this.add_numbers(big, this.getSign());
+          default:
+            throw new IllegalArgumentException(MSG_INVALID_COMPARE);
+        }
+
+      }
       else
         switch(compare(big))
         {
@@ -102,15 +120,29 @@ public class BigInteger
           case 0:
               return new BigInteger(0);
           default:
-            throw new IllegalArgumentException("Invalid compare() return value.");
+            throw new IllegalArgumentException(MSG_INVALID_COMPARE);
         }
     }
 
     public BigInteger add_numbers(BigInteger big, char sign) // This is bigger than that
     {
       String newnum = "";
+      int a=0, b=0, sum=0, cout=0; // var for add operation
+      int index; 
       
-      newnum = newnum.concat(Character.toString(sign));
+      for(index=0;index<=this.getNumber().length;index++)
+      {
+        if (index == this.getNumber().length && cout == 0) break;
+        a = Character.getNumericValue(this.getNumber()[index]);
+        b = Character.getNumericValue((index < big.getNumber().length) ? big.getNumber()[index] : '0');
+        
+        sum = a+b+cout;
+        cout = (a+b)/10;
+        newnum = (new Integer(sum%10).toString()).concat(newnum);
+      }
+
+
+      if (sign == '-' && !isZero(newnum)) newnum = (new Character(sign).toString()).concat(newnum);
 
       return new BigInteger(newnum);
     }
@@ -128,15 +160,31 @@ public class BigInteger
           case 0:
               return new BigInteger(0);
           default:
-            throw new IllegalArgumentException("Invalid compare() return value.");
+            throw new IllegalArgumentException(MSG_INVALID_COMPARE);
         }
     }
 
     public BigInteger subtract_numbers(BigInteger big, char sign) // This is bigger than that
     {
       String newnum = "";
+      int a=0, b=0, sum, cout=0;
+      int index;
 
-      newnum = newnum.concat(Character.toString(sign));
+      for(index=0;index<=this.getNumber().length;index++)
+      {
+        if (index == this.getNumber().length && cout == 0) break;
+        a = Character.getNumericValue(this.getNumber()[index]);
+        b = Character.getNumericValue((index < big.getNumber().length) ? big.getNumber()[index] : '0');
+        
+        sum = a-b+cout + ((a-b+cout < 0) ? 10 : 0);
+        cout = (a-b+cout<0) ? -1 : 0;
+        newnum = (new Integer(sum%10).toString()).concat(newnum);
+      }
+
+      Matcher matcher = FRONT_ZERO_PATTERN.matcher(newnum);
+      if (matcher.find()) newnum = matcher.group(2);
+
+      if (sign == '-' && !isZero(newnum)) newnum = (new Character(sign).toString()).concat(newnum);
 
       return new BigInteger(newnum);
     }
@@ -160,6 +208,16 @@ public class BigInteger
  
     public BigInteger multiply(BigInteger big)
     {
+      String newnum = "";
+      int a=0, b=0, mul=0, cout=0;
+      int index;
+  
+      // Cascade a*b+c
+      for (index = 0; index<big.getNumber().length;index++)
+      {
+        
+      }
+
       return new BigInteger(0);
     }
 
@@ -167,6 +225,11 @@ public class BigInteger
     {
       if (sign == big.getSign()) return '+';
       else return '-';  
+    }
+
+    public boolean isZero(String number)
+    {
+      return (number.charAt(0) == '0');
     }
  
     @Override
@@ -194,16 +257,18 @@ public class BigInteger
 
         while (matcher.find())
         {
-	         StringBuilder expr = new StringBuilder(); 
            num1 = new BigInteger(matcher.group(1));
            num2 = new BigInteger(matcher.group(3));
            operator = matcher.group(2).charAt(0);
         }
+
+        System.out.println("num1: " + num1);
+        System.out.println("num2: " + num2);
         
         if (operator == '+') return num1.add(num2);
         else if (operator == '-') return num1.subtract(num2);
         else if (operator == '*') return num1.multiply(num2);
-        else throw new IllegalArgumentException();
+        else throw new IllegalArgumentException(MSG_INVALID_OPERATOR);
     }
  
     public static void main(String[] args) throws Exception
@@ -223,7 +288,7 @@ public class BigInteger
                     }
                     catch (IllegalArgumentException e)
                     {
-                        System.err.println(MSG_INVALID_INPUT);
+                        System.err.println(e.getMessage());
                     }
                 }
             }
@@ -241,7 +306,7 @@ public class BigInteger
         else
         {
             BigInteger result = evaluate(input);
-            System.out.println(result.toString());
+            System.out.println("result: " + result.toString());
  
             return false;
         }
