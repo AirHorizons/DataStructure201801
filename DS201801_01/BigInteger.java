@@ -183,6 +183,8 @@ public class BigInteger
       Matcher matcher = FRONT_ZERO_PATTERN.matcher(newnum);
       if (matcher.find()) newnum = matcher.group(2);
 
+      if (newnum.isEmpty()) newnum="0";
+
       if (sign == '-' && !isZero(newnum)) newnum = (new Character(sign).toString()).concat(newnum);
 
       return new BigInteger(newnum);
@@ -207,23 +209,54 @@ public class BigInteger
  
     public BigInteger multiply(BigInteger big)
     {
-      String newnum = "";
+      BigInteger newnum = new BigInteger(0);
       int a=0, b=0, mul=0, cout=0;
       int index;
-  
+      char sign = this.multiplySign(big);
+
       // Cascade a*b+c
       for (index = 0; index<big.getNumber().length;index++)
       {
-        
+        newnum = newnum.add(multiply_single((big.getNumber())[index], index, sign));
       }
 
-      return new BigInteger(0);
+      return newnum;
     }
 
     public char multiplySign(BigInteger big)
     {
       if (sign == big.getSign()) return '+';
       else return '-';  
+    }
+
+    public BigInteger multiply_single(char multiplier, int power, char sign) // return number of this times single digit of bit times power of 10 over digit
+    {
+      String newnum = "";
+      int a=0, b=0, mul=0, cout=0;
+      int index;
+
+      for(index=0;index<=this.getNumber().length;index++)
+      {
+        if (index == this.getNumber().length && cout == 0) break;
+        a = Character.getNumericValue((index < this.getNumber().length) ? this.getNumber()[index] : '0');
+        b = Character.getNumericValue(multiplier);
+        
+        mul = a*b+cout;
+        cout = mul/10;
+        newnum = (new Integer(mul%10).toString()).concat(newnum);
+      }
+
+      for(index=0;index<power;index++)
+        newnum = newnum.concat("0");
+      
+      Matcher matcher = FRONT_ZERO_PATTERN.matcher(newnum);
+      if (matcher.find()) newnum = matcher.group(2);
+
+      if (newnum.isEmpty()) newnum="0";
+
+      if (sign == '-' && !isZero(newnum)) newnum = (new Character(sign).toString()).concat(newnum);
+
+      return new BigInteger(newnum);
     }
 
     public boolean isZero(String number)
@@ -253,16 +286,12 @@ public class BigInteger
 	      input = input.replaceAll("\\s+", "");
         Matcher matcher = EXPRESSION_PATTERN.matcher(input);
 
-        System.out.print(input + " = ");
-
         while (matcher.find())
         {
            num1 = new BigInteger(matcher.group(1));
            num2 = new BigInteger(matcher.group(3));
            operator = matcher.group(2).charAt(0);
         }
-
-        System.out.println(num1 + " " + operator + " " + num2);
         
         if (operator == '+') return num1.add(num2);
         else if (operator == '-') return num1.subtract(num2);
