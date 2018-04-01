@@ -133,11 +133,11 @@ public class BigInteger
       for(index=0;index<=this.getNumber().length;index++)
       {
         if (index == this.getNumber().length && cout == 0) break;
-        a = Character.getNumericValue(this.getNumber()[index]);
+        a = Character.getNumericValue((index < this.getNumber().length) ? this.getNumber()[index] : '0');
         b = Character.getNumericValue((index < big.getNumber().length) ? big.getNumber()[index] : '0');
         
         sum = a+b+cout;
-        cout = (a+b)/10;
+        cout = sum/10;
         newnum = (new Integer(sum%10).toString()).concat(newnum);
       }
 
@@ -156,7 +156,7 @@ public class BigInteger
           case 1:
             return this.subtract_numbers(big, this.getSign());
           case -1:
-              return big.subtract_numbers(this, big.getSign());
+              return big.subtract_numbers(this, ((this.getSign() == '+') ? '-' : '+'));
           case 0:
               return new BigInteger(0);
           default:
@@ -170,9 +170,8 @@ public class BigInteger
       int a=0, b=0, sum, cout=0;
       int index;
 
-      for(index=0;index<=this.getNumber().length;index++)
+      for(index=0;index<this.getNumber().length;index++)
       {
-        if (index == this.getNumber().length && cout == 0) break;
         a = Character.getNumericValue(this.getNumber()[index]);
         b = Character.getNumericValue((index < big.getNumber().length) ? big.getNumber()[index] : '0');
         
@@ -254,6 +253,7 @@ public class BigInteger
 	      input = input.replaceAll("\\s+", "");
         Matcher matcher = EXPRESSION_PATTERN.matcher(input);
 
+        System.out.print(input + " = ");
 
         while (matcher.find())
         {
@@ -262,8 +262,7 @@ public class BigInteger
            operator = matcher.group(2).charAt(0);
         }
 
-        System.out.println("num1: " + num1);
-        System.out.println("num2: " + num2);
+        System.out.println(num1 + " " + operator + " " + num2);
         
         if (operator == '+') return num1.add(num2);
         else if (operator == '-') return num1.subtract(num2);
@@ -306,7 +305,7 @@ public class BigInteger
         else
         {
             BigInteger result = evaluate(input);
-            System.out.println("result: " + result.toString());
+            System.out.println(result.toString());
  
             return false;
         }
