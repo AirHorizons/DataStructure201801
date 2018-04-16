@@ -5,6 +5,8 @@ public interface ListInterface<T> extends Iterable<T> {
 
 	public void add(T item);
 
+	public void add(T item, int i);
+
 	public T first();
 
 	public void removeAll();

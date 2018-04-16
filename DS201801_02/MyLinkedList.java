@@ -5,7 +5,7 @@ import java.util.NoSuchElementException;
 public class MyLinkedList<T> implements ListInterface<T> {
 	// dummy head
 	Node<T> head;
-	int numItems;
+	private int numItems;
 
 	public MyLinkedList() {
 		head = new Node<T>(null);
@@ -28,6 +28,9 @@ public class MyLinkedList<T> implements ListInterface<T> {
     public final Iterator<T> iterator() {
     	return new MyLinkedListIterator<T>(this);
     }
+
+  public int getNumItems() {return numItems;}
+  public void setNumItems(int n) {numItems = n;}
 
 	@Override
 	public boolean isEmpty() {
@@ -53,6 +56,41 @@ public class MyLinkedList<T> implements ListInterface<T> {
 		last.insertNext(item);
 		numItems += 1;
 	}
+
+  @Override
+  public void add(T item, int n) {
+    if (n >= numItems) throw new NoSuchElementException();
+    else {
+      Node<T> last = head;
+      for (int i=0;i<n;i++)
+        last = last.getNext();
+      last.insertNext(item, last.getNext());
+      numItems += 1;
+    }
+  }
+
+  public T get(int n){
+    if (n >= numItems) throw new NoSuchElementException();
+    else {
+      Node<T> last = head;
+      for (int i=0;i<=n;i++)
+        last = last.getNext();
+      return last.getItem();
+    }
+  }
+
+  public T remove(int n) {
+    if (n >= numItems) return null;
+    Node <T> curr = head.getNext();
+    Node <T> prev = head;
+    for (int i=0; i<n ;i++) {
+      prev = curr;
+      curr = curr.getNext();
+    }
+    prev.removeNext();
+    numItems -=1;
+    return curr.getItem();
+  }
 
 	@Override
 	public void removeAll() {
@@ -97,7 +135,7 @@ class MyLinkedListIterator<T> implements Iterator<T> {
 		if (curr == null)
 			throw new NoSuchElementException();
 		prev.removeNext();
-		list.numItems -= 1;
+		list.setNumItems(list.getNumItems()-1);
 		curr = prev;
 		prev = null;
 	}
