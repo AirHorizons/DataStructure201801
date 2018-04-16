@@ -141,7 +141,6 @@ public class BigInteger
         newnum = (new Integer(sum%10).toString()).concat(newnum);
       }
 
-
       if (sign == '-' && !isZero(newnum)) newnum = (new Character(sign).toString()).concat(newnum);
 
       return new BigInteger(newnum);
@@ -149,7 +148,20 @@ public class BigInteger
  
     public BigInteger subtract(BigInteger big)
     {
-      if (this.getSign() != big.getSign()) return add_numbers(big, this.sign);
+      if (this.getSign() != big.getSign()) 
+      {
+        switch(compare(big))
+        {
+          case 1:
+            return this.add_numbers(big, this.getSign());
+          case -1:
+            return big.add_numbers(this, this.getSign());
+          case 0:
+            return this.add_numbers(big, this.getSign());
+          default:
+            throw new IllegalArgumentException(MSG_INVALID_COMPARE);
+        }
+      }
       else
         switch(compare(big))
         {
