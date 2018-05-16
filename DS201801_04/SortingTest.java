@@ -97,7 +97,6 @@ public class SortingTest
 	////////////////////////////////////////////////////////////////////////////////////////////////////
 	private static int[] DoBubbleSort(int[] value)
 	{
-		// TODO : Bubble Sort 를 구현하라.
 		// value는 정렬안된 숫자들의 배열이며 value.length 는 배열의 크기가 된다.
 		// 결과로 정렬된 배열은 리턴해 주어야 하며, 두가지 방법이 있으므로 잘 생각해서 사용할것.
 		// 주어진 value 배열에서 안의 값만을 바꾸고 value를 다시 리턴하거나
@@ -120,7 +119,19 @@ public class SortingTest
 	////////////////////////////////////////////////////////////////////////////////////////////////////
 	private static int[] DoInsertionSort(int[] value)
 	{
-		// TODO : Insertion Sort 를 구현하라.
+    int i, j, n;
+    for (i = 0; i < value.length; i++)
+    {
+      n = value[i];
+      j = i - 1;
+
+      while(j >= 0 && value[j] > n)
+      {
+        value[j+1] = value[j];
+        j = j - 1;
+      }
+      value[j+1] = n;
+    }
 
 		return (value);
 	}
@@ -128,15 +139,50 @@ public class SortingTest
 	////////////////////////////////////////////////////////////////////////////////////////////////////
 	private static int[] DoHeapSort(int[] value)
 	{
-		// TODO : Heap Sort 를 구현하라.
+    for (int i = value.length/2 - 1; i >= 0; i--)
+    {
+      MakeHeap(value, value.length, i);
+    }
+    for (int i = value.length - 1; i >= 0; i--)
+    {
+      int temp = value[0];
+      value[0] = value[i];
+      value[i] = temp;
+      MakeHeap(value, i, 0);
+    }
 		return (value);
 	}
+
+  private static void MakeHeap(int[] value, int size, int n)
+  {
+    int min = n;
+    int left = 2 * min + 1;
+    int right = 2 * min + 2;
+
+    if (left < size && value[left] < value[min])
+    {
+      min = left;
+    }
+    
+    if (right < size && value[right] < value[min])
+    {
+      min = right;
+    }
+
+    if (min != n)
+    {
+      int temp = value[min];
+      value[min] = value[n];
+      value[n] = temp;
+      MakeHeap(value, size, min);
+    }
+    return;
+  }
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////
 	private static int[] DoMergeSort(int[] value)
 	{
-		// TODO : Merge Sort 를 구현하라.
-    MergeSort_R(value, 0, value.length);
+    MergeSort_R(value, 0, value.length-1);
 		return (value);
 	}
 
@@ -144,9 +190,9 @@ public class SortingTest
   {
     if (low<high)
     {
-      int mid=(low+high)/2;
+      int mid= low + (high-low)/2;
       MergeSort_R(value, low, mid);
-      MergeSort_R(value, mid, high);
+      MergeSort_R(value, mid+1, high);
       Merge(value, low, mid, high);
     }
   }
@@ -154,25 +200,25 @@ public class SortingTest
   private static void Merge(int[] value, int low, int mid, int high)
   {
     int[] temparr = new int[high - low +1];
-    int i = low, j = mid;
-    while((i!=mid)||(j!=high))
+    int i = low, j = mid+1;
+    while((i<mid+1)||(j<high+1))
     {
-      if (j == high)
+      if (j == high+1)
       {
-        temparr[i + j - low - mid] = value[i++];
+        temparr[i + j - low - mid - 1] = value[i++];
       }
-      else if (i == mid)
+      else if (i == mid+1)
       {
-        temparr[i + j - low - mid] = value[j++];
+        temparr[i + j - low - mid - 1] = value[j++];
       }
       else if (value[i]<value[j])
       {
-        temparr[i + j - low - mid] = value[i++];
+        temparr[i + j - low - mid - 1] = value[i++];
       }
       else
-        temparr[i + j - low - mid] = value[j++];
+        temparr[i + j - low - mid - 1] = value[j++];
     }
-    for (i = low; i < high; i++)
+    for (i = low; i <= high; i++)
     {
       value[i] = temparr[i - low];
     }
@@ -181,7 +227,6 @@ public class SortingTest
 	////////////////////////////////////////////////////////////////////////////////////////////////////
 	private static int[] DoQuickSort(int[] value)
 	{
-		// TODO : Quick Sort 를 구현하라.
     QuickSort_R(value, 0, value.length);
 		return (value);
 	}
@@ -221,7 +266,77 @@ public class SortingTest
 	////////////////////////////////////////////////////////////////////////////////////////////////////
 	private static int[] DoRadixSort(int[] value)
 	{
-		// TODO : Radix Sort 를 구현하라.
+    int m = FindMax(value);
+
+    for (int exp=1; m/exp>0; exp*=10)
+    {
+      value = RadixStep(value, exp);
+    }
+    value = RadixStep(value); // sort for minus sign
 		return (value);
 	}
+
+  private static int[] RadixStep(int[] value, int exp)
+  {
+    int result[] = new int[value.length];
+    int count[] = new int[10];
+    int i;
+    
+    Arrays.fill(count, 0);
+    for (i=0; i<value.length; i++)
+    {
+      count[((value[i] / exp) % 10) + (((value[i]/exp) % 10 >= 0) ? 0 : 10)]++;
+    }
+    for (i=1; i<10; i++)
+    {
+      count[i] += count[i-1];
+    }
+    for (i=value.length-1; i>=0; i--)
+    {
+      result[count[((value[i] / exp) % 10) + (((value[i]/exp) % 10 >= 0) ? 0 : 10)] - 1] = value[i];
+      count[((value[i] / exp) % 10) + (((value[i]/exp) % 10 >= 0) ? 0 : 10)]--;
+    }
+    return (result);
+  }
+
+  private static int[] RadixStep(int[] value)
+  {
+    int result[] = new int[value.length];
+    int count[] = new int[2];
+    int i, numneg; // numneg for counting negative number
+
+    count[0] = 0;
+    for (i=0; i<value.length; i++)
+    {
+      if (value[i] < 0) count[0]++;
+    }
+    numneg = count[0];
+    count[1] = value.length;
+    for (i=value.length-1; i>=0; i--)
+    {
+      if (value[i] < 0) 
+      {
+        result[count[0]-1] = value[i];
+        count[0]--;
+      }
+      else
+      {
+        result[count[1] - 1] = value[i];
+        count[1]--;
+      }
+    }
+    return (result);
+  }
+
+  private static int FindMax(int[] value)
+  {
+    int max = Math.abs(value[0]);
+    for (int i=1; i<value.length; i++)
+    {
+      int x = Math.abs(value[i]);
+      if (x > max)
+        max = x;
+    }
+    return max;
+  }
 }
