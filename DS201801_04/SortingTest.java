@@ -155,26 +155,26 @@ public class SortingTest
 
   private static void MakeHeap(int[] value, int size, int n)
   {
-    int min = n;
-    int left = 2 * min + 1;
-    int right = 2 * min + 2;
+    int max = n;
+    int left = 2 * max + 1;
+    int right = 2 * max + 2;
 
-    if (left < size && value[left] < value[min])
+    if (left < size && value[left] > value[max])
     {
-      min = left;
+      max = left;
     }
     
-    if (right < size && value[right] < value[min])
+    if (right < size && value[right] > value[max])
     {
-      min = right;
+      max = right;
     }
 
-    if (min != n)
+    if (max != n)
     {
-      int temp = value[min];
-      value[min] = value[n];
+      int temp = value[max];
+      value[max] = value[n];
       value[n] = temp;
-      MakeHeap(value, size, min);
+      MakeHeap(value, size, max);
     }
     return;
   }
