@@ -7,6 +7,7 @@ class LinkedList<T> {
     this.head = new Node<T>();
     this.numItems = 0;
   }
+  public boolean isEmpty() { return numItems==0; }
   public int size() {
     return numItems;
   }
@@ -25,29 +26,32 @@ class LinkedList<T> {
     try {
       prev = find(n-1);
       curr = prev.getNext();
-
       if (curr == null) throw new IndexOutOfBoundaryException();
 
       prev.setNext(curr.getNext());
       numItems--;
-      return curr;
+      return curr.getItem();
     }
     catch (IndexOutOfBoundaryException e) {
       throw e;
     }
   }
-  private T find(int n) throws IndexOutOfBoundaryException {
-    int i=0;
-    Node<T> curr = head;
+  public T get(int n) throws IndexOutOfBoundaryException {
+    if (n >= 0 && n < numItems) {
+      return find(n).getItem();
+    }
+    else throw new IndexOutOfBoundaryException();
+  }
+  private Node<T> find(int n) {
+    Node<T> curr = head.getNext();
 
-    if (n > numItems) throw new IndexOutOfBoundaryException();
-    if (n == -1) return head;
-
-    do {
+    for (int i=0; i<numItems; i++) {
       curr = curr.getNext();
-      i++
-    } while(i < n);
-
+    }
     return curr;
+  }
+  public void removeAll() { 
+    head.next = null;
+    numItems = 0;
   }
 }
