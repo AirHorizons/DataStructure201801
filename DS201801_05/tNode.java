@@ -1,4 +1,4 @@
-class tNode<T> {
+class tNode<T extends Comparable<T>> {
   private T item;
   private tNode<T> left;
   private tNode<T> right;
