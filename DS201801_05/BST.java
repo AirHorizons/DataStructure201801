@@ -45,8 +45,11 @@ class BST<T extends Comparable<T>> {
       throw e;
     }
   } 
-  protected tNode<T> deleteItem(tNode Node, T item) {
+  protected tNode<T> deleteItem(tNode Node, T item) throws ItemNotFoundException {
+    if (Node == null) throw new ItemNotFoundException("Deletion Failed: No such Item");
+    else {
 
+    }
   }
 
 }

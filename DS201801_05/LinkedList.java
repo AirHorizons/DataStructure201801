@@ -16,7 +16,7 @@ class LinkedList<T> {
 
     while(curr.next != null)
       curr = curr.getNext();
-    curr.setNext(new Node<T>(item, null));
+    curr.setNext(new Node<T>(item, null));et
     numItems++;
 
     return;
@@ -26,7 +26,7 @@ class LinkedList<T> {
     try {
       prev = find(n-1);
       curr = prev.getNext();
-      if (curr == null) throw new IndexOutOfBoundaryException();
+      if (curr == null) throw new IndexOutOfBoundaryException("Remove Failed: Index out of Boundary");
 
       prev.setNext(curr.getNext());
       numItems--;
@@ -40,7 +40,7 @@ class LinkedList<T> {
     if (n >= 0 && n < numItems) {
       return find(n).getItem();
     }
-    else throw new IndexOutOfBoundaryException();
+    else throw new IndexOutOfBoundaryException("Get Failed: Index out of Boundary");
   }
   private Node<T> find(int n) {
     Node<T> curr = head.getNext();
