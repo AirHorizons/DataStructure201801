@@ -25,7 +25,7 @@ class BST<T extends Comparable<T>> {
   public tNode<T> retrieve(T item) {
     return retrieveItem(root, item);
   }
-  protected tNode<T> retrieveItem(tNode Node, T item) {
+  protected tNode<T> retrieveItem(tNode<T> Node, T item) {
     if (Node == null) return null;
     else {
       if (item.equals(Node.getItem())) return Node;
@@ -45,11 +45,51 @@ class BST<T extends Comparable<T>> {
       throw e;
     }
   } 
-  protected tNode<T> deleteItem(tNode Node, T item) throws ItemNotFoundException {
+  protected tNode<T> deleteItem(tNode<T> Node, T item) throws ItemNotFoundException {
     if (Node == null) throw new ItemNotFoundException("Deletion Failed: No such Item");
     else {
-
+      if (item.equals(Node.getItem())) {
+        Node = deleteNode(Node);
+      }
+      else if (item.compareTo(Node.getItem()) < 0) {
+        Node.setLeft(Node.deleteItem(Node.getLeft(), item));
+      }
+      else
+        Node.setRight(Node.deleteItem(Node.getRight(), item));
     }
   }
+  protected tNode<T> deleteNode(tNode<T> Node) {
+    if (Node.getLeft() == null && Node.getRight() == null) return null;
+    else if (Node.getRight() == null) return tNode.getLeft();
+    else if (Node.getLeft() == null) return tNode.getRight();
+    else {
+      // replace tNode with the biggest item of left subtree
+      Node = replaceMax(Node.getLeft());
+      Node.setLeft(deleteMax(Node.getLeft()));
+      return Node;
+    }
+  }
+  protected tNode<T> replaceMax(tNode<T> Node) {
+    if (Node.getRight() == null) return Node;
+    else return replaceMax(Node.getRight());
+  }
+  protected tNode<T> deleteMax(tNode<T> Node) {
+    if (Node.getRight() == null) return Node.getLeft();
+    else {
+      Node.setRight(deleteMax(Node.getRight()));
+      return Node;
+    }
+  }
+  // Preorder Traverse
+  //------------------------------------------------//
+  public void preorder() {
+    preorder_R(root);
+  }
+  private void preorder_R(tNode<T> Node) {
+    if (Node == null) return;
 
+    System.out.print(item.toString());
+    preorder_R(Node.getLeft());
+    preorder_R(Node.getRight());
+  }
 }
