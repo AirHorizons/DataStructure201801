@@ -36,13 +36,15 @@ class LinkedList<T> {
   public T remove(int n) throws IndexOutOfBoundaryException {
     Node<T> curr, prev;
     try {
-      prev = find(n-1);
-      curr = prev.getNext();
-      if (curr == null) throw new IndexOutOfBoundaryException("Remove Failed: Index out of Boundary");
+      if (n >= 0 && n < numItems) {
+        prev = find(n-1);
+        curr = prev.getNext();
 
-      prev.setNext(curr.getNext());
-      numItems--;
-      return curr.getItem();
+        prev.setNext(curr.getNext());
+        numItems--;
+        return curr.getItem();
+      }
+      else throw new IndexOutOfBoundaryException("Remove Failed: Index out of Boundary");
     }
     catch (IndexOutOfBoundaryException e) {
       throw e;
@@ -61,9 +63,10 @@ class LinkedList<T> {
     else throw new IndexOutOfBoundaryException("Get Failed: Index out of Boundary");
   }
   private Node<T> find(int n) {
+    if (n == -1) return head;
     Node<T> curr = head.getNext();
 
-    for (int i=0; i<numItems; i++) {
+    for (int i=0; i<n; i++) {
       curr = curr.getNext();
     }
     return curr;
