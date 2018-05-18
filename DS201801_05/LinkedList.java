@@ -11,6 +11,12 @@ class LinkedList<T> {
   public int size() {
     return numItems;
   }
+
+  /***********************************************
+   *
+   *      ADD
+   *
+   ***********************************************/
   public void add(T item) {
     Node<T> curr = head;
 
@@ -21,6 +27,12 @@ class LinkedList<T> {
 
     return;
   }
+
+  /***********************************************
+   *
+   *     REMOVE 
+   *
+   ***********************************************/
   public T remove(int n) throws IndexOutOfBoundaryException {
     Node<T> curr, prev;
     try {
@@ -36,6 +48,12 @@ class LinkedList<T> {
       throw e;
     }
   }
+
+  /***********************************************
+   *
+   *     GET 
+   *
+   ***********************************************/
   public T get(int n) throws IndexOutOfBoundaryException {
     if (n >= 0 && n < numItems) {
       return find(n).getItem();
@@ -50,8 +68,27 @@ class LinkedList<T> {
     }
     return curr;
   }
+
+  /***********************************************
+   *
+   *     REMOVEALL 
+   *
+   ***********************************************/
   public void removeAll() { 
     head.setNext(null);
     numItems = 0;
+  }
+
+  /***********************************************
+   *
+   *     PRINT 
+   *
+   ***********************************************/
+  public void print() {
+    Node<T> curr = head.getNext();
+    while(curr != null) {
+      System.out.println(curr.getItem().toString());
+      curr = curr.getNext();
+    }
   }
 }
