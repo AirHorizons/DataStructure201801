@@ -14,9 +14,9 @@ class LinkedList<T> {
   public void add(T item) {
     Node<T> curr = head;
 
-    while(curr.next != null)
+    while(curr.getNext() != null)
       curr = curr.getNext();
-    curr.setNext(new Node<T>(item, null));et
+    curr.setNext(new Node<T>(item, null));
     numItems++;
 
     return;
@@ -51,7 +51,7 @@ class LinkedList<T> {
     return curr;
   }
   public void removeAll() { 
-    head.next = null;
+    head.setNext(null);
     numItems = 0;
   }
 }

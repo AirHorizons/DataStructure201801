@@ -1,3 +1,3 @@
 class IndexOutOfBoundaryException extends Exception {
-  public IndexOutOfBoundaryExcception(string s) { super(s); }
+  public IndexOutOfBoundaryException(String s) { super(s); }
 }

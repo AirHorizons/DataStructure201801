@@ -1,21 +1,41 @@
+import java.util.*;
+
 class BST<T extends Comparable<T>> {
-  tNode<T> root;
+  private tNode<T> root;
+  private Comparator<T> comparator;
+
+  public BST() {
+    root = null;
+    comparator = null;
+  }
+
+  public BST(Comparator<T> comparator) {
+    root = null;
+    this.comparator = comparator;
+  }
+
+  public int compare(T x, T y) {
+    if (comparator == null)
+      return x.compareTo(y);
+    else
+      return comparator.compare(x, y);
+  }
   
   public boolean isEmpty() { return root==null; }
-  
+
   // Insert
   //------------------------------------------------//
   public tNode<T> insert(T item) {
     return insertItem(root, item);
   }
-  protected tNode<T> insertItem(tNode Node, T item) {
+  protected tNode<T> insertItem(tNode<T> Node, T item) {
     if (Node == null) {
-      Node = new Node(item);
+      Node = new tNode<T>(item);
     }
-    else if (item.compareTo(Node.getItem()) < 0) {
+    else if (compare(item, Node.getItem()) < 0) {
       Node.setLeft(insertItem(Node.getLeft(), item));
     }
-    else if (item.compareTo(Node.getItem()) > 0) {
+    else if (compare(item, Node.getItem()) > 0) {
       Node.setRight(insertItem(Node.getRight(), item));
     }
     return Node;
@@ -28,8 +48,8 @@ class BST<T extends Comparable<T>> {
   protected tNode<T> retrieveItem(tNode<T> Node, T item) {
     if (Node == null) return null;
     else {
-      if (item.equals(Node.getItem())) return Node;
-      else if (item.compareTo(Node.getItem()) < 0)
+      if (compare(item, Node.getItem()) == 0) return Node;
+      else if (compare(item, Node.getItem()) < 0)
         return retrieveItem(Node.getLeft(), item);
       else 
         return retrieveItem(Node.getRight(), item);
@@ -48,20 +68,21 @@ class BST<T extends Comparable<T>> {
   protected tNode<T> deleteItem(tNode<T> Node, T item) throws ItemNotFoundException {
     if (Node == null) throw new ItemNotFoundException("Deletion Failed: No such Item");
     else {
-      if (item.equals(Node.getItem())) {
+      if (compare(item, Node.getItem()) == 0) {
         Node = deleteNode(Node);
       }
-      else if (item.compareTo(Node.getItem()) < 0) {
-        Node.setLeft(Node.deleteItem(Node.getLeft(), item));
+      else if (compare(item, Node.getItem()) < 0){
+        Node.setLeft(deleteItem(Node.getLeft(), item));
       }
       else
-        Node.setRight(Node.deleteItem(Node.getRight(), item));
+        Node.setRight(deleteItem(Node.getRight(), item));
     }
+    return Node;
   }
   protected tNode<T> deleteNode(tNode<T> Node) {
     if (Node.getLeft() == null && Node.getRight() == null) return null;
-    else if (Node.getRight() == null) return tNode.getLeft();
-    else if (Node.getLeft() == null) return tNode.getRight();
+    else if (Node.getRight() == null) return Node.getLeft();
+    else if (Node.getLeft() == null) return Node.getRight();
     else {
       // replace tNode with the biggest item of left subtree
       Node = replaceMax(Node.getLeft());
@@ -88,7 +109,7 @@ class BST<T extends Comparable<T>> {
   private void preorder_R(tNode<T> Node) {
     if (Node == null) return;
 
-    System.out.print(item.toString());
+    System.out.print(Node.getItem().toString());
     preorder_R(Node.getLeft());
     preorder_R(Node.getRight());
   }

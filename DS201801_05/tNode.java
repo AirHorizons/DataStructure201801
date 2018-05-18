@@ -1,4 +1,4 @@
-class tNode<T extends Comparable<T>> {
+class tNode<T> {
   private T item;
   private tNode<T> left;
   private tNode<T> right;
@@ -15,7 +15,7 @@ class tNode<T extends Comparable<T>> {
     this(null, null, null);
   }
   public T getItem() { return this.item; }
-  public void setItem(I item) { this.item = item; }
+  public void setItem(T item) { this.item = item; }
   public tNode<T> getLeft() { return this.left; }
   public void setLeft(tNode<T> left) { this.left = left; }
   public tNode<T> getRight() { return this.right; }
