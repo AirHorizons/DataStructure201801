@@ -1,7 +1,7 @@
 import java.util.*;
 
-class BST<Key extends Comparable<Key>, Value extends LinkedList<T>, T> {
-  private tNode<Key, Value> root;
+class BST<Key extends Comparable<Key>, Value> {
+  private tNode<Key, LinkedList<Value>> root;
   private Comparator<Key> comparator;
 
   public BST() {
@@ -25,14 +25,14 @@ class BST<Key extends Comparable<Key>, Value extends LinkedList<T>, T> {
 
   // Insert
   //------------------------------------------------//
-  public tNode<Key, Value> insert(Key key, T item) {
-    return insertItem(root, key, item);
+  public tNode<Key, LinkedList<Value>> insert(Key key, Value item) {
+    return root = insertItem(root, key, item);
   }
-  protected tNode<Key, Value> insertItem(tNode<Key, Value> Node, Key key, T item) {
+  protected tNode<Key, LinkedList<Value>> insertItem(tNode<Key, LinkedList<Value>> Node, Key key, Value item) {
     if (Node == null) {
-      Value ll = (Value)new LinkedList<T>();
+      LinkedList<Value> ll = new LinkedList<Value>();
       ll.add(item);
-      Node = new tNode<Key, Value>(key, ll);
+      Node = new tNode<Key, LinkedList<Value>>(key, ll);
     }
     else if (compare(key, Node.getKey()) == 0) {
       Node.getValue().add(item);
@@ -47,10 +47,10 @@ class BST<Key extends Comparable<Key>, Value extends LinkedList<T>, T> {
   }
   // Retrieve
   //------------------------------------------------//
-  public tNode<Key, Value> retrieve(Key key) {
+  public tNode<Key, LinkedList<Value>> retrieve(Key key) {
     return retrieveItem(root, key);
   }
-  protected tNode<Key, Value> retrieveItem(tNode<Key, Value> Node, Key key) {
+  protected tNode<Key, LinkedList<Value>> retrieveItem(tNode<Key, LinkedList<Value>> Node, Key key) {
     if (Node == null) return null;
     else {
       if (compare(key, Node.getKey()) == 0) return Node;
@@ -62,15 +62,15 @@ class BST<Key extends Comparable<Key>, Value extends LinkedList<T>, T> {
   }
   // Delete
   //------------------------------------------------//
-  public tNode<Key, Value> delete(Key key) throws ItemNotFoundException {
+  public tNode<Key, LinkedList<Value>> delete(Key key) throws ItemNotFoundException {
     try {
-      return deleteItem(root, key);
+      return root = deleteItem(root, key);
     }
     catch (ItemNotFoundException e) {
       throw e;
     }
   } 
-  protected tNode<Key, Value> deleteItem(tNode<Key, Value> Node, Key key) throws ItemNotFoundException {
+  protected tNode<Key, LinkedList<Value>> deleteItem(tNode<Key, LinkedList<Value>> Node, Key key) throws ItemNotFoundException {
     if (Node == null) throw new ItemNotFoundException("Deletion Failed: No such Item");
     else {
       if (compare(key, Node.getKey()) == 0) {
@@ -84,7 +84,7 @@ class BST<Key extends Comparable<Key>, Value extends LinkedList<T>, T> {
     }
     return Node;
   }
-  protected tNode<Key, Value> deleteNode(tNode<Key, Value> Node) {
+  protected tNode<Key, LinkedList<Value>> deleteNode(tNode<Key, LinkedList<Value>> Node) {
     if (Node.getLeft() == null && Node.getRight() == null) return null;
     else if (Node.getRight() == null) return Node.getLeft();
     else if (Node.getLeft() == null) return Node.getRight();
@@ -95,11 +95,11 @@ class BST<Key extends Comparable<Key>, Value extends LinkedList<T>, T> {
       return Node;
     }
   }
-  protected tNode<Key, Value> replaceMax(tNode<Key, Value> Node) {
+  protected tNode<Key, LinkedList<Value>> replaceMax(tNode<Key, LinkedList<Value>> Node) {
     if (Node.getRight() == null) return Node;
     else return replaceMax(Node.getRight());
   }
-  protected tNode<Key, Value> deleteMax(tNode<Key, Value> Node) {
+  protected tNode<Key, LinkedList<Value>> deleteMax(tNode<Key, LinkedList<Value>> Node) {
     if (Node.getRight() == null) return Node.getLeft();
     else {
       Node.setRight(deleteMax(Node.getRight()));
@@ -111,10 +111,10 @@ class BST<Key extends Comparable<Key>, Value extends LinkedList<T>, T> {
   public void preorder() {
     preorder_R(root);
   }
-  private void preorder_R(tNode<Key, Value> Node) {
+  private void preorder_R(tNode<Key, LinkedList<Value>> Node) {
     if (Node == null) return;
 
-    System.out.print(Node.getKey().toString() + ": " + Node.getValue().toString());
+    System.out.println(Node.getKey().toString() + ": " + Node.getValue().toString());
     preorder_R(Node.getLeft());
     preorder_R(Node.getRight());
   }
