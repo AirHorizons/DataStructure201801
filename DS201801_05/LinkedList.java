@@ -88,10 +88,18 @@ class LinkedList<T> {
    *
    ***********************************************/
   public void print() {
+    System.out.println(this.toString());
+  }
+
+  @Override
+  public String toString() {
     Node<T> curr = head.getNext();
+    String result = "";
     while(curr != null) {
-      System.out.println(curr.getItem().toString());
+      String s = curr.getItem().toString();
+      result += s;
       curr = curr.getNext();
     }
+    return result;
   }
 }
