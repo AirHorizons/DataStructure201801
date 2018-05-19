@@ -103,7 +103,7 @@ public class SortingTest
 		// 같은 크기의 새로운 배열을 만들어 그 배열을 리턴할 수도 있다.
     for (int i=0; i<value.length-1; i++)
     {
-      for (int j=i; j<value.length-1; j++)
+      for (int j=0; j<value.length-1-i; j++)
       {
         if (value[j]>value[j+1])
         {
