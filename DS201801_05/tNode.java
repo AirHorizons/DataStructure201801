@@ -1,23 +1,27 @@
-class tNode<T> {
-  private T item;
-  private tNode<T> left;
-  private tNode<T> right;
+class tNode<Key, Value> {
+  private Key key;
+  private Value value;
+  private tNode<Key, Value> left;
+  private tNode<Key, Value> right;
 
-  public tNode(T item, tNode<T> left, tNode<T> right) {
-    this.item = item;
+  public tNode(Key key, Value value, tNode<Key, Value> left, tNode<Key, Value> right) {
+    this.key = key;
+    this.value = value;
     this.left = left;
     this.right = right;
   }
-  public tNode(T item) {
-    this(item, null, null);
+  public tNode(Key key, Value value) {
+    this(key, value, null, null);
   }
   public tNode() {
-    this(null, null, null);
+    this(null, null, null, null);
   }
-  public T getItem() { return this.item; }
-  public void setItem(T item) { this.item = item; }
-  public tNode<T> getLeft() { return this.left; }
-  public void setLeft(tNode<T> left) { this.left = left; }
-  public tNode<T> getRight() { return this.right; }
-  public void setRight(tNode<T> right) { this.right = right; }
+  public Key getKey() { return this.key; }
+  public void setKey(Key key) { this.key = key; }
+  public Value getValue() { return this.value; }
+  public void setValue(Value value) { this.value = value; }
+  public tNode<Key, Value> getLeft() { return this.left; }
+  public void setLeft(tNode<Key, Value> left) { this.left = left; }
+  public tNode<Key, Value> getRight() { return this.right; }
+  public void setRight(tNode<Key, Value> right) { this.right = right; }
 }

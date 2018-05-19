@@ -1,20 +1,20 @@
 import java.util.*;
 
-class BST<T extends Comparable<T>> {
-  private tNode<T> root;
-  private Comparator<T> comparator;
+class BST<Key extends Comparable<Key>, Value extends LinkedList<T>, T> {
+  private tNode<Key, Value> root;
+  private Comparator<Key> comparator;
 
   public BST() {
     root = null;
     comparator = null;
   }
 
-  public BST(Comparator<T> comparator) {
+  public BST(Comparator<Key> comparator) {
     root = null;
     this.comparator = comparator;
   }
 
-  public int compare(T x, T y) {
+  public int compare(Key x, Key y) {
     if (comparator == null)
       return x.compareTo(y);
     else
@@ -25,61 +25,66 @@ class BST<T extends Comparable<T>> {
 
   // Insert
   //------------------------------------------------//
-  public tNode<T> insert(T item) {
-    return insertItem(root, item);
+  public tNode<Key, Value> insert(Key key, T item) {
+    return insertItem(root, key, item);
   }
-  protected tNode<T> insertItem(tNode<T> Node, T item) {
+  protected tNode<Key, Value> insertItem(tNode<Key, Value> Node, Key key, T item) {
     if (Node == null) {
-      Node = new tNode<T>(item);
+      Value ll = (Value)new LinkedList<T>();
+      ll.add(item);
+      Node = new tNode<Key, Value>(key, ll);
     }
-    else if (compare(item, Node.getItem()) < 0) {
-      Node.setLeft(insertItem(Node.getLeft(), item));
+    else if (compare(key, Node.getKey()) == 0) {
+      Node.getValue().add(item);
     }
-    else if (compare(item, Node.getItem()) > 0) {
-      Node.setRight(insertItem(Node.getRight(), item));
+    else if (compare(key, Node.getKey()) < 0) {
+      Node.setLeft(insertItem(Node.getLeft(), key, item));
+    }
+    else if (compare(key, Node.getKey()) > 0) {
+      Node.setRight(insertItem(Node.getRight(), key, item));
     }
     return Node;
   }
   // Retrieve
   //------------------------------------------------//
-  public tNode<T> retrieve(T item) {
-    return retrieveItem(root, item);
+  public tNode<Key, Value> retrieve(Key key) {
+    return retrieveItem(root, key);
   }
-  protected tNode<T> retrieveItem(tNode<T> Node, T item) {
+  protected tNode<Key, Value> retrieveItem(tNode<Key, Value> Node, Key key) {
     if (Node == null) return null;
     else {
-      if (compare(item, Node.getItem()) == 0) return Node;
-      else if (compare(item, Node.getItem()) < 0)
-        return retrieveItem(Node.getLeft(), item);
+      if (compare(key, Node.getKey()) == 0) return Node;
+      else if (compare(key, Node.getKey()) < 0)
+        return retrieveItem(Node.getLeft(), key);
       else 
-        return retrieveItem(Node.getRight(), item);
+        return retrieveItem(Node.getRight(), key);
     }
   }
   // Delete
   //------------------------------------------------//
-  public tNode<T> delete(T item) throws ItemNotFoundException {
+  public tNode<Key, Value> delete(Key key) throws ItemNotFoundException {
     try {
-      return deleteItem(root, item);
+      return deleteItem(root, key);
     }
     catch (ItemNotFoundException e) {
       throw e;
     }
   } 
-  protected tNode<T> deleteItem(tNode<T> Node, T item) throws ItemNotFoundException {
+  protected tNode<Key, Value> deleteItem(tNode<Key, Value> Node, Key key) throws ItemNotFoundException {
     if (Node == null) throw new ItemNotFoundException("Deletion Failed: No such Item");
     else {
-      if (compare(item, Node.getItem()) == 0) {
+      if (compare(key, Node.getKey()) == 0) {
         Node = deleteNode(Node);
       }
-      else if (compare(item, Node.getItem()) < 0){
-        Node.setLeft(deleteItem(Node.getLeft(), item));
+      else if (compare(key, Node.getKey()) < 0){
+        Node.setLeft(deleteItem(Node.getLeft(), key));
       }
       else
-        Node.setRight(deleteItem(Node.getRight(), item));
+        Node.setRight(deleteItem(Node.getRight(), key));
     }
     return Node;
   }
-  protected tNode<T> deleteNode(tNode<T> Node) {
+  protected tNode<Key, Value> deleteNode(tNode<Key, Value> Node) {
     if (Node.getLeft() == null && Node.getRight() == null) return null;
     else if (Node.getRight() == null) return Node.getLeft();
     else if (Node.getLeft() == null) return Node.getRight();
@@ -90,26 +95,26 @@ class BST<T extends Comparable<T>> {
       return Node;
     }
   }
-  protected tNode<T> replaceMax(tNode<T> Node) {
+  protected tNode<Key, Value> replaceMax(tNode<Key, Value> Node) {
     if (Node.getRight() == null) return Node;
     else return replaceMax(Node.getRight());
   }
-  protected tNode<T> deleteMax(tNode<T> Node) {
+  protected tNode<Key, Value> deleteMax(tNode<Key, Value> Node) {
     if (Node.getRight() == null) return Node.getLeft();
     else {
       Node.setRight(deleteMax(Node.getRight()));
       return Node;
     }
   }
-  // Preorder Traverse
+  // Preorder Keyraverse
   //------------------------------------------------//
   public void preorder() {
     preorder_R(root);
   }
-  private void preorder_R(tNode<T> Node) {
+  private void preorder_R(tNode<Key, Value> Node) {
     if (Node == null) return;
 
-    System.out.print(Node.getItem().toString());
+    System.out.print(Node.getKey().toString() + ": " + Node.getValue().toString());
     preorder_R(Node.getLeft());
     preorder_R(Node.getRight());
   }
