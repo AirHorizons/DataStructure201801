@@ -1,8 +1,8 @@
 import java.util.*;
 
 class BST<Key extends Comparable<Key>, Value> {
-  private tNode<Key, LinkedList<Value>> root;
-  private Comparator<Key> comparator;
+  protected tNode<Key, LinkedList<Value>> root;
+  protected Comparator<Key> comparator;
 
   public BST() {
     root = null;
