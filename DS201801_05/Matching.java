@@ -1,7 +1,15 @@
 import java.io.*;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 
 public class Matching
 {
+  private final String input_pattern = "([<@?]) (*)";
+  private Pattern p = Pattern.compile(input_pattern);
+
+  private HashTable<String, StringPosition> ht;
+
+
 	public static void main(String args[])
 	{
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -25,7 +33,10 @@ public class Matching
 
 	private static void command(String input)
 	{
-		// TODO : 아래 문장을 삭제하고 구현해라.
-		System.out.println("<< command 함수에서 " + input + " 명령을 처리할 예정입니다 >>");
+    Matcher m = p.matcher(input);
+    while (m.find()) {
+      String command = m.group(1);
+      String target = m.group(2); 
+    }
 	}
 }
