@@ -90,7 +90,9 @@ class BST<Key extends Comparable<Key>, Value> {
     else if (Node.getLeft() == null) return Node.getRight();
     else {
       // replace tNode with the biggest item of left subtree
-      Node = replaceMax(Node.getLeft());
+      tNode<Key, LinkedList<Value>> tempNode = replaceMax(Node.getLeft());
+      Node.setKey(tempNode.getKey());
+      Node.setValue(tempNode.getValue());
       Node.setLeft(deleteMax(Node.getLeft()));
       return Node;
     }
@@ -100,7 +102,8 @@ class BST<Key extends Comparable<Key>, Value> {
     else return replaceMax(Node.getRight());
   }
   protected tNode<Key, LinkedList<Value>> deleteMax(tNode<Key, LinkedList<Value>> Node) {
-    if (Node.getRight() == null) return Node.getLeft();
+    if (Node == null) return null;
+    else if (Node.getRight() == null) return Node.getLeft();
     else {
       Node.setRight(deleteMax(Node.getRight()));
       return Node;
