@@ -6,6 +6,8 @@ class HashTable<Key extends Comparable<Key>, Value> {
 
   public HashTable() {
     Buckets = new ArrayList<AVL<Key, Value>>(HASHSIZE);
+    for (int i=0; i<HASHSIZE; i++)
+      Buckets.get(i) = new AVL();
   }
 
   public void insert(Key key, Value value) {
