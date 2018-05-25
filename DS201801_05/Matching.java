@@ -37,7 +37,9 @@ public class Matching
     while (m.find()) {
       String command = m.group(1);
       String target = m.group(2); 
-      
+     
+      ht = new HashTable();
+
       if (command.equals("<")) {
         readFile(target);
       }
@@ -58,9 +60,16 @@ public class Matching
       br = new BufferedReader(new InputStreamReader(fis));
 
       String line = br.readLine();
+      int linenum = 1;
       while (line != null) {
         int length = line.length();
-        // TODO : take 6 characters and insert AVL trees
+
+        for (int i=0; i<length-5; i++) {
+          String token = line.substring(i, i+6);
+          ht.get(ht.getHash(token)).insert(token, new StringPosition(linenum, i+1));
+        }
+
+        linenum++;
       }
     }
     catch (FileNotFoundException e) {
@@ -86,8 +95,14 @@ public class Matching
     ht.get(index).preorder();
   }
   private static void printPattern(String target) {
-    // TODO
   }
-  
+  private static LinkedList<StringPosition> printPattern_R(String target, int index, LinkedList<StringPosition> tokens) {
+    LinkedList<StringPosition> positions = ht.get(ht.getHash(target.substring(index, index+6))).retrieve(target.substring(index, index+6));
+    // tokens와 positions 사이에서 index만큼 차이나는 것들만 filter해서 recursive하게 
+
+
+    return printPattern_R(target, index+1, tokens);
+  }
+  private static void printNotFound() { System.out.println("(0, 0)"); }
 
 }
