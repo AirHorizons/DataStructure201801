@@ -99,7 +99,7 @@ class LinkedList<T> {
       String s = curr.getItem().toString();
       result += s;
       if (curr.getNext() != null)
-        result += ", ";
+        result += " ";
       curr = curr.getNext();
     }
     return result;

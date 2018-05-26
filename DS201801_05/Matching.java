@@ -98,7 +98,6 @@ public class Matching
     }
       
     
-    System.out.println(index);
     ht.retrieveByHash(index).preorderByKey();
   }
   
