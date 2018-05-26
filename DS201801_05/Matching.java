@@ -7,7 +7,7 @@ public class Matching
   private final static String input_pattern = "([<@?]) (.*)";
   private static Pattern p = Pattern.compile(input_pattern);
 
-  private HashTable<String, StringPosition> ht;
+  private static HashTable<String, StringPosition> ht;
 
 
 	public static void main(String args[])
@@ -38,7 +38,6 @@ public class Matching
       String command = m.group(1);
       String target = m.group(2); 
      
-      ht = new HashTable();
 
       if (command.equals("<")) {
         readFile(target);
@@ -58,6 +57,7 @@ public class Matching
     try {
       fis = new FileInputStream(target);
       br = new BufferedReader(new InputStreamReader(fis));
+      ht = new HashTable<String, StringPosition>();
 
       String line = br.readLine();
       int linenum = 1;
@@ -66,10 +66,11 @@ public class Matching
 
         for (int i=0; i<length-5; i++) {
           String token = line.substring(i, i+6);
-          ht.get(ht.getHash(token)).insert(token, new StringPosition(linenum, i+1));
+          ht.insert(token, new StringPosition(linenum, i+1));
         }
 
         linenum++;
+        line = br.readLine();
       }
     }
     catch (FileNotFoundException e) {
@@ -88,21 +89,52 @@ public class Matching
       }
     }
   } 
+  
   private static void printHash(String target) {
-    int index = Integer.ParseInt(target);
-    if (ht == null) return;
+    int index = Integer.parseInt(target);
+    if (ht == null) {
+      System.out.println("Table is empty");
+      return;
+    }
+      
     
-    ht.get(index).preorder();
+    System.out.println(index);
+    ht.retrieveByHash(index).preorderByKey();
   }
+  
   private static void printPattern(String target) {
+    LinkedList<StringPosition> result = printPattern_R(target, ht.retrieve(target.substring(0, 6)), 0);
+    if (result == null || result.isEmpty()) printNotFound();
+    else {
+      result.print();
+    }
   }
-  private static LinkedList<StringPosition> printPattern_R(String target, int index, LinkedList<StringPosition> tokens) {
-    LinkedList<StringPosition> positions = ht.get(ht.getHash(target.substring(index, index+6))).retrieve(target.substring(index, index+6));
-    // tokens와 positions 사이에서 index만큼 차이나는 것들만 filter해서 recursive하게 
+  
+  private static LinkedList<StringPosition> printPattern_R(String target, LinkedList<StringPosition> tokens, int index) {
+    if (index >= target.length()-5) return tokens;
+    LinkedList<StringPosition> filter = ht.retrieve(target.substring(index, index+6));
 
+    tokens = Filter(tokens, filter, index);
 
-    return printPattern_R(target, index+1, tokens);
+    return printPattern_R(target, tokens, index+1);
   }
   private static void printNotFound() { System.out.println("(0, 0)"); }
 
+  private static LinkedList<StringPosition> Filter(LinkedList<StringPosition> x, LinkedList<StringPosition>filter, int index) {
+    LinkedList<StringPosition> filtered = new LinkedList<StringPosition>();
+    if (x == null) return null;
+    try {
+      for (int i=0; i<x.size(); i++) {
+        for (int j=0; j<filter.size(); j++) {
+          if (x.get(i).getRow() == filter.get(j).getRow() && x.get(i).getCol() + index == filter.get(j).getCol())
+            filtered.add(x.get(i));
+        }
+      }
+    }
+    catch (IndexOutOfBoundaryException e) {
+      e.printStackTrace();
+    }
+    
+    return filtered; 
+  }
 }

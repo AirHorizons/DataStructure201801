@@ -1,13 +1,13 @@
 import java.util.*;
 
 class HashTable<Key extends Comparable<Key>, Value> {
-  private ArrayList<AVL<Key, Value>>  Buckets;
+  private ArrayList<AVL<Key, Value>> Buckets;
   private final int HASHSIZE = 100;
 
   public HashTable() {
     Buckets = new ArrayList<AVL<Key, Value>>(HASHSIZE);
     for (int i=0; i<HASHSIZE; i++)
-      Buckets.get(i) = new AVL();
+      Buckets.add(new AVL<Key, Value>());
   }
 
   public void insert(Key key, Value value) {
@@ -17,6 +17,12 @@ class HashTable<Key extends Comparable<Key>, Value> {
   public LinkedList<Value> retrieve(Key key) {
     tNode<Key, LinkedList<Value>> Node = Buckets.get(getHash(key)).retrieve(key);
     if (Node != null) return Node.getValue();
+    else return null;
+  }
+
+  public AVL<Key, Value> retrieveByHash(int hash){
+    if (hash >=0 && hash < 100)
+      return Buckets.get(hash);
     else return null;
   }
 

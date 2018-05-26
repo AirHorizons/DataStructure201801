@@ -15,4 +15,10 @@ class StringPosition implements Comparable<StringPosition> {
   public boolean equals(StringPosition other) {
     return (this.row == other.getRow()) && (this.col == other.getCol());
   }
+  @Override
+  public String toString() {
+    String result = "";
+    result += "(" + row + ", " + col + ")";
+    return result;
+  }
 }

@@ -109,7 +109,7 @@ class BST<Key extends Comparable<Key>, Value> {
       return Node;
     }
   }
-  // Preorder Keyraverse
+  // Preorder Traverse
   //------------------------------------------------//
   public void preorder() {
     preorder_R(root);
@@ -120,5 +120,18 @@ class BST<Key extends Comparable<Key>, Value> {
     System.out.println(Node.getKey().toString() + ": " + Node.getValue().toString());
     preorder_R(Node.getLeft());
     preorder_R(Node.getRight());
+  }
+  public void preorderByKey() {
+    String result = preorderByKey_R(root);
+    if (result.length() > 2)
+      result = result.substring(0, result.length()-1);
+    else result = "EMPTY";
+    System.out.println(result);
+  }
+  public String preorderByKey_R(tNode<Key, LinkedList<Value>> Node) {
+    String s = "";
+    if (Node == null) return s;
+    s += Node.getKey() + " " + preorderByKey_R(Node.getLeft()) + preorderByKey_R(Node.getRight());
+    return s;
   }
 }

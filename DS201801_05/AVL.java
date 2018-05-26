@@ -25,6 +25,15 @@ class AVL<Key extends Comparable<Key>, Value> extends BST<Key, Value> {
     leftNode.setRight(Node);
     return leftNode;
   } 
+
+  /*
+   *
+   *
+   *  INSERT
+   *
+   *
+   */
+
   @Override
   public tNode<Key, LinkedList<Value>> insert(Key key, Value item) {
     return root = insertItem(root, key, item);
@@ -42,13 +51,20 @@ class AVL<Key extends Comparable<Key>, Value> extends BST<Key, Value> {
       Node.setLeft(rotateLeft(Node.getLeft()));
       return rotateRight(Node);
     }
-    if (getBalance(Node) < -1 && compare(key, Node.getLeft().getKey()) < 0) {
+    if (getBalance(Node) < -1 && compare(key, Node.getRight().getKey()) < 0) {
       Node.setRight(rotateRight(Node.getRight()));
       return rotateLeft(Node);
     }
 
     return Node;
   }
+  /*
+   *
+   *
+   *  DELETE
+   *
+   *
+   */
   @Override
   public tNode<Key, LinkedList<Value>> delete(Key key) throws ItemNotFoundException {
     try {

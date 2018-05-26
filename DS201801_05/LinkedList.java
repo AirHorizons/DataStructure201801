@@ -98,6 +98,8 @@ class LinkedList<T> {
     while(curr != null) {
       String s = curr.getItem().toString();
       result += s;
+      if (curr.getNext() != null)
+        result += ", ";
       curr = curr.getNext();
     }
     return result;
