@@ -110,7 +110,7 @@ public class Matching
   }
   
   private static LinkedList<StringPosition> printPattern_R(String target, LinkedList<StringPosition> tokens, int index) {
-    if (index >= target.length()-5) return tokens;
+    if (index >= target.length()-6) return tokens;
     LinkedList<StringPosition> filter = ht.retrieve(target.substring(index, index+6));
 
     tokens = Filter(tokens, filter, index);
@@ -126,10 +126,11 @@ public class Matching
       int p=0;
       for (int i=0; i<x.size(); i++) {
         for (int j=p; j<filter.size(); j++) {
-          if (x.get(i).getRow() == filter.get(j).getRow() && x.get(i).getCol() + index == filter.get(j).getCol())
+          if (x.get(i).getRow() == filter.get(j).getRow() && x.get(i).getCol() + index == filter.get(j).getCol()) {
             filtered.add(x.get(i));
             // 체크한 원소 뒤부터 체크해도 된다
             p = j;
+          }
         }
       }
     }
