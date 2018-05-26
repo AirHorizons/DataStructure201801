@@ -123,10 +123,13 @@ public class Matching
     LinkedList<StringPosition> filtered = new LinkedList<StringPosition>();
     if (x == null) return null;
     try {
+      int p=0;
       for (int i=0; i<x.size(); i++) {
-        for (int j=0; j<filter.size(); j++) {
+        for (int j=p; j<filter.size(); j++) {
           if (x.get(i).getRow() == filter.get(j).getRow() && x.get(i).getCol() + index == filter.get(j).getCol())
             filtered.add(x.get(i));
+            // 체크한 원소 뒤부터 체크해도 된다
+            p = j;
         }
       }
     }
