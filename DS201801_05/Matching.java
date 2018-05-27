@@ -110,12 +110,13 @@ public class Matching
   }
   
   private static LinkedList<StringPosition> printPattern_R(String target, LinkedList<StringPosition> tokens, int index) {
-    if (index >= target.length()-6) return tokens;
     LinkedList<StringPosition> filter = ht.retrieve(target.substring(index, index+6));
 
     tokens = Filter(tokens, filter, index);
+    int nextstep = (target.length()-1-(index+5) >= 6) ? 6 : (target.length()-1 - (index+5));
 
-    return printPattern_R(target, tokens, index+1);
+    if (index >= target.length()-6) return tokens;
+    else return printPattern_R(target, tokens, index + nextstep);
   }
   private static void printNotFound() { System.out.println("(0, 0)"); }
 
@@ -123,6 +124,18 @@ public class Matching
     LinkedList<StringPosition> filtered = new LinkedList<StringPosition>();
     if (x == null) return null;
     try {
+      int i=0, j=0;
+      while (i < x.size() && j < filter.size()) {
+        if (x.get(i).compareWithOffset(filter.get(j), index) < 0) i++;
+        else if (x.get(i).compareWithOffset(filter.get(j), index) > 0) j++;
+        else {
+          filtered.add(x.get(i));
+          i++;
+          j++;
+        }
+      }
+
+      /*
       int p=0;
       for (int i=0; i<x.size(); i++) {
         for (int j=p; j<filter.size(); j++) {
@@ -133,6 +146,7 @@ public class Matching
           }
         }
       }
+      */
     }
     catch (IndexOutOfBoundaryException e) {
       e.printStackTrace();
