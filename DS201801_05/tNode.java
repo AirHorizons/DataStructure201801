@@ -3,12 +3,14 @@ class tNode<Key, Value> {
   private Value value;
   private tNode<Key, Value> left;
   private tNode<Key, Value> right;
+  private int height;
 
   public tNode(Key key, Value value, tNode<Key, Value> left, tNode<Key, Value> right) {
     this.key = key;
     this.value = value;
     this.left = left;
     this.right = right;
+    this.height = 0;
   }
   public tNode(Key key, Value value) {
     this(key, value, null, null);
@@ -24,4 +26,6 @@ class tNode<Key, Value> {
   public void setLeft(tNode<Key, Value> left) { this.left = left; }
   public tNode<Key, Value> getRight() { return this.right; }
   public void setRight(tNode<Key, Value> right) { this.right = right; }
+  public int getHeight() { return this.height; }
+  public void setHeight(int height) { this.height = height; }
 }

@@ -1,13 +1,18 @@
 class AVL<Key extends Comparable<Key>, Value> extends BST<Key, Value> {
-  int height;
-
+ 
+  /*
+   *
+   *
+   *  MISC
+   *
+   *
+   */ 
+  private int max(int a, int b){
+    return (a>b)?a:b;
+  }
   private int getHeight(tNode<Key, LinkedList<Value>> Node) {
     if (Node == null) return 0;
-
-    return max(getHeight(Node.getLeft()), getHeight(Node.getRight())) + 1;
-  }
-  private int max(int a, int b) {
-    return (a > b) ? a : b;
+    return Node.getHeight();
   }
   private int getBalance(tNode<Key, LinkedList<Value>> Node) {
     if (Node == null) return 0;
@@ -17,12 +22,16 @@ class AVL<Key extends Comparable<Key>, Value> extends BST<Key, Value> {
     tNode<Key, LinkedList<Value>> rightNode = Node.getRight();
     Node.setRight(rightNode.getLeft());
     rightNode.setLeft(Node);
+    Node.setHeight(max(getHeight(Node.getLeft()), getHeight(Node.getRight()))+1);
+    rightNode.setHeight(max(getHeight(rightNode.getLeft()), getHeight(rightNode.getRight()))+1);
     return rightNode;
   } 
   private tNode<Key, LinkedList<Value>> rotateRight(tNode<Key, LinkedList<Value>> Node) {
     tNode<Key, LinkedList<Value>> leftNode = Node.getLeft();
     Node.setLeft(leftNode.getRight());
     leftNode.setRight(Node);
+    Node.setHeight(max(getHeight(Node.getLeft()), getHeight(Node.getRight()))+1);
+    leftNode.setHeight(max(getHeight(leftNode.getLeft()), getHeight(leftNode.getRight()))+1);
     return leftNode;
   } 
 
@@ -41,6 +50,7 @@ class AVL<Key extends Comparable<Key>, Value> extends BST<Key, Value> {
   @Override
   public tNode<Key, LinkedList<Value>> insertItem(tNode<Key, LinkedList<Value>> Node, Key key, Value item) {
     Node = super.insertItem(Node, key, item);
+    Node.setHeight(max(getHeight(Node.getLeft()), getHeight(Node.getRight()))+1);
     if (getBalance(Node) > 1 && compare(key, Node.getLeft().getKey()) < 0) {
       return rotateRight(Node);
     }
@@ -78,6 +88,7 @@ class AVL<Key extends Comparable<Key>, Value> extends BST<Key, Value> {
   public tNode<Key, LinkedList<Value>> deleteItem(tNode<Key, LinkedList<Value>> Node, Key key) throws ItemNotFoundException {
     try {
       Node = super.deleteItem(Node, key);
+      Node.setHeight(max(getHeight(Node.getLeft()), getHeight(Node.getRight()))+1);
       if (getBalance(Node) > 1 && getBalance(Node.getLeft()) >= 0) {
         return rotateRight(Node);
       }
