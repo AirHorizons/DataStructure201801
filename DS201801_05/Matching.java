@@ -95,7 +95,6 @@ public class Matching
       System.out.println("Table is empty");
       return;
     }
-      
     
     ht.retrieveByHash(index).preorderByKey();
   }
@@ -114,7 +113,7 @@ public class Matching
     LinkedList<StringPosition> filter = ht.retrieve(target.substring(index, index+6));
 
     tokens = Filter(tokens, filter, index);
-    int nextstep = (target.length()-1-(index+5) >= 6) ? 6 : (target.length()-1 - (index+5));
+    int nextstep = (target.length()-index >= 12) ? 6 : (target.length()-1 - (index+5));
 
     if (index >= target.length()-6) return tokens;
     else return printPattern_R(target, tokens, index + nextstep);
@@ -123,7 +122,6 @@ public class Matching
 
   private static LinkedList<StringPosition> Filter(LinkedList<StringPosition> x, LinkedList<StringPosition>filter, int index) {
     LinkedList<StringPosition> filtered = new LinkedList<StringPosition>();
-    if (x == null) return null;
     try {
       int i=0, j=0;
       while (i < x.size() && j < filter.size()) {

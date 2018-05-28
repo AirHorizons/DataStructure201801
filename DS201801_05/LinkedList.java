@@ -1,10 +1,12 @@
 class LinkedList<T> {
 
   private Node<T> head;
+  private Node<T> tail;
   private int numItems; 
 
   public LinkedList() {
     this.head = new Node<T>();
+    this.tail = null;
     this.numItems = 0;
   }
   public boolean isEmpty() { return numItems==0; }
@@ -18,14 +20,18 @@ class LinkedList<T> {
    *
    ***********************************************/
   public void add(T item) {
-    Node<T> curr = head;
-
-    while(curr.getNext() != null)
-      curr = curr.getNext();
-    curr.setNext(new Node<T>(item, null));
-    numItems++;
-
-    return;
+    if (tail != null) {
+      tail.setNext(new Node<T>(item, null));
+      tail = tail.getNext();
+      numItems++;
+      return;
+    }
+    else {
+      head.setNext(new Node<T>(item, null));
+      tail = head.getNext();
+      numItems++;
+      return;
+    }
   }
 
   /***********************************************
@@ -79,6 +85,7 @@ class LinkedList<T> {
    ***********************************************/
   public void removeAll() { 
     head.setNext(null);
+    tail = null;
     numItems = 0;
   }
 
