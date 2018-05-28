@@ -8,6 +8,8 @@ public class Matching
   private static Pattern p = Pattern.compile(input_pattern);
 
   private static HashTable<String, StringPosition> ht;
+  private static String recentkey;
+  private static LinkedList<StringPosition> recentvalue; 
 
 	public static void main(String args[])
 	{
@@ -57,6 +59,8 @@ public class Matching
       fis = new FileInputStream(target);
       br = new BufferedReader(new InputStreamReader(fis));
       ht = new HashTable<String, StringPosition>();
+      recentkey = null;
+      recentvalue = null;
 
       String line = br.readLine();
       int linenum = 1;
@@ -100,20 +104,29 @@ public class Matching
   }
   
   private static void printPattern(String target) {
+    if (target.equals(recentkey)) {
+      if (recentvalue == null || recentvalue.isEmpty()) printNotFound();
+      else
+        recentvalue.print();
+    }
+    else {
     LinkedList<StringPosition> result = printPattern_R(target, ht.retrieve(target.substring(0, 6)), 0);
+    recentkey = target;
+    recentvalue = result;
     if (result == null || result.isEmpty()) printNotFound();
     else {
       result.print();
+      }
     }
   }
   
   private static LinkedList<StringPosition> printPattern_R(String target, LinkedList<StringPosition> tokens, int index) {
     if (tokens == null) return null;
     if (tokens.isEmpty()) return tokens;
-    LinkedList<StringPosition> filter = ht.retrieve(target.substring(index, index+6));
+    LinkedList<StringPosition> filter = ht.retrieve(target.substring(index, index + 6));
 
     tokens = Filter(tokens, filter, index);
-    int nextstep = (target.length()-index >= 12) ? 6 : (target.length()-1 - (index+5));
+    int nextstep = (target.length() - index >= 12) ? 6 : (target.length() - index - 6);
 
     if (index >= target.length()-6) return tokens;
     else return printPattern_R(target, tokens, index + nextstep);
@@ -122,6 +135,7 @@ public class Matching
 
   private static LinkedList<StringPosition> Filter(LinkedList<StringPosition> x, LinkedList<StringPosition>filter, int index) {
     LinkedList<StringPosition> filtered = new LinkedList<StringPosition>();
+    if (filter == null) return filtered;
     try {
       int i=0, j=0;
       while (i < x.size() && j < filter.size()) {
