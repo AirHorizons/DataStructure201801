@@ -1,15 +1,15 @@
 class Edge {
-  private Station start;
-  private Station end;
+  private String code_src;
+  private String code_dest;
   private int time;
 
-  public Edge(Station s, Station e, int t) {
-    start = s;
-    end = e;
+  public Edge(String cs, String cd, int t) {
+    code_src = cs;
+    code_dest = cd;
     time = t;
   }
 
-  public Station getStart() { return start; }
-  public Station getEnd() { return end; }
+  public String getSrc() { return code_src; }
+  public String getDest() { return code_dest; }
   public int getTime() { return time; }
 }
