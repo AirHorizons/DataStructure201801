@@ -16,11 +16,11 @@ class Subway {
 
 
     public static void main(String[] args) {
-      
+      al = new AdjacencyList(); 
+      try {
+        BufferedReader br = new BufferedReader(new FileReader(args[0]));
 
-      while(true) {
-        try {
-          BufferedReader br = new BufferedReader(new FileReader(args[0]));
+        while(true) {
           String input = br.readLine();
           
           if (input.compareTo("QUIT") == 0)
@@ -28,14 +28,14 @@ class Subway {
 
           command(input);
         }
+      }
         catch (IOException e) {
           System.out.println("잘못된 입력입니다. " + e.toString());
         }
-      }
     }
 
     public static void command(String input) {
-      if (input.isEmpty()) {
+      if (input.trim().isEmpty()) {
         state += 1;
         return;
       }
@@ -61,12 +61,15 @@ class Subway {
           }
           break;
         case INPUT_QUERY:
+          System.out.println(al);
+          /*
           m = qp.matcher(input);
           while (m.find()){
-            if (m.group().length() == 4) findLeastTransferPath();
+            if (m.group().length() == 4) findLeastTransferPath(m.group(1), m.group(2));
             else
-              findShortestPath();
+              findShortestPath(m.group(1), m.group(2));
           }
+          */
           break;
         default: return;
       }
@@ -76,7 +79,22 @@ class Subway {
      */
 
     // print shortest path. If there is same name within the path, it is transfer station so merge it and wrap it with bracket.
-    public static void findShortestPath() {}
+    public static void findShortestPath(String start, String end) {
+      Station v = al.getStationByName(start); 
+      for (Station st : al.getMap().values()) {
+        
+      }
+    }
 
-    public static void findLeastTransferPath() {}
+    public static void findLeastTransferPath(String start, String end) {
+
+    }
+    // return > 0 when a > b, < 0 when a < b, 0 when a = b
+    public static int compareDistance(int a, int b) {
+      if (a == Integer.MAX_VALUE) return 1;
+      else {
+        if (b == Integer.MAX_VALUE) return -1;
+        else return a-b;
+      }
+    }
 }
