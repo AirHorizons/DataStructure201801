@@ -4,7 +4,7 @@ class Station {
   private String name;
   private String line;
   private int distance;
-  private String previous;
+  private String previous; // Name of the previous station on the shortest path
   private ArrayList<Edge> connected;
   public Station (String c, String n, String l) {
     code = c;

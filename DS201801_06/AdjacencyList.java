@@ -72,6 +72,9 @@ class AdjacencyList {
       Station st = map.get(code);
       return st;
     }
+    public Station getStationByCode(String code) {
+      return map.get(code);
+    }
     public HashMap<String, Station> getMap(){
       return map;
     }
