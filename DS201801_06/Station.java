@@ -28,6 +28,13 @@ class Station {
   public ArrayList<Edge> getConnected() {
       return connected;
   }
+  public ArrayList<String> getDest() {
+    ArrayList<String> al = new ArrayList<String>();
+    for (Edge e : connected) {
+      al.add(e.getDest());
+    }
+    return al;
+  }
 
   // setters
   public Station addConnected(Edge e) {

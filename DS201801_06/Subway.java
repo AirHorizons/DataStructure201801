@@ -15,6 +15,7 @@ class Subway {
     private final static int INPUT_STATION = 0;
     private final static int INPUT_EDGE = 1;
     private final static int INPUT_QUERY = 2;
+    private final static int INF = Integer.MAX_VALUE;
     private static int state = 0;
 
 
@@ -27,19 +28,24 @@ class Subway {
       al = new AdjacencyList(); 
       try {
         BufferedReader br = new BufferedReader(new FileReader(args[0]));
+        String input = "";
 
         while(true) {
-          String input = br.readLine();
-          
-          if (input.compareTo("QUIT") == 0)
-            break;
-
+          input = br.readLine();
+          if (input == null) break;
+          command(input);
+        }
+        state = INPUT_QUERY;
+        br = new BufferedReader(new InputStreamReader(System.in));
+        while (true) {
+          input = br.readLine();
+          if (input.equals("QUIT")) break;
           command(input);
         }
       }
-        catch (IOException e) {
+      catch (IOException e) {
           System.out.println("잘못된 입력입니다. " + e.toString());
-        }
+      }
     }
 
     public static void command(String input) {
@@ -88,57 +94,91 @@ class Subway {
     // print shortest path. If there is same name within the path, it is transfer station so merge it and wrap it with bracket.
     public static void findShortestPath(String start, String end) {
       unvisited = new HashSet<Station>();
-      for (Station st : al.getMap().values()) unvisited.add(st);
-      visited = new HashSet<Station>();
-      distances = new HashMap<Station, Integer>();
-      previous = new HashMap<Station, Station>();
-      Station newstation = al.getStationByName(start);
-      newstation.setDistance(0);
-      while (!unvisited.isEmpty() && !newstation.getName().equals(end)) {
+      for (Station st: al.getMap().values()) {
+        st.setDistance(INF);
+        st.setPrevious(null);  
+        unvisited.add(st);
+      }
+      Station newstation = null;
+      for (String code : al.getTransferCode(start)){
+        newstation = al.getStationByCode(code);
+        newstation.setDistance(0);
+      }
+      while (!unvisited.isEmpty()){// && !newstation.getName().equals(end)) {
+        //System.out.println(unvisited.size());
         newstation = getMin(unvisited);  
+        //System.out.println(newstation.getName()+" "+newstation.getCode());
         unvisited.remove(newstation);      
-        visited.add(newstation);
-        for (Station updatestation : unvisited) {
-          if (compareDistance(updatestation.getDistance(), addDistance(newstation.getDistance(), al.getDistance(newstation.getCode(), updatestation.getCode()))) > 0) {
-            updatestation.setDistance(addDistance(newstation.getDistance(), al.getDistance(newstation.getCode(), updatestation.getCode())));
+        for (String s : newstation.getDest()) {
+          Station updatestation = al.getStationByCode(s);
+          if (!unvisited.contains(updatestation)) continue;
+          int newdistance = addDistance(newstation.getDistance(), al.getDistance(newstation.getCode(), updatestation.getCode()));
+            //if (updatestation.getName().equals("양재")) {
+              //System.out.println(updatestation.getCode());
+              //System.out.println("Original Distance: " + updatestation.getDistance() + " from " + ((updatestation.getPrevious() != null) ? al.getStationByCode(updatestation.getPrevious()).getName(): ""));
+              //System.out.println("New Distance: " + newdistance + " from " + newstation.getName());
+            //}            
+          if (compareDistance(updatestation.getDistance(), newdistance) > 0) {
+            updatestation.setDistance(newdistance);
             updatestation.setPrevious(newstation.getCode());
+            //unvisited.add(updatestation);
+            //System.out.println("\t" + updatestation.getName() + " " + updatestation.getCode() + " "+ al.getStationByCode(updatestation.getPrevious()).getName() +" "+updatestation.getPrevious());
           } 
         }
       }
-      /*
-      System.out.println("----------");
-      for (Station st : al.getMap().values()) {
-        System.out.print(st.getName() + " " + st.getCode() + " " + ((st.getPrevious() == null)? "\n" : (al.getStationByCode(st.getPrevious()).getName() + "\n")));
-      }
-      System.out.println("----------");
-      */
       Station st = al.getStationByName(end);
       Stack<String> stack = new Stack<String>();
-      String result = "";
-      boolean first = true;
-      while(true) {
-        stack.push(st.getName());
-        if (st.getName().equals(start)) break;
-        st = al.getStationByCode(st.getPrevious());
+      Stack<String> beststack = new Stack<String>();
+      String bestresult = "";
+      int mintime = Integer.MAX_VALUE;
+      int time=0;
+      boolean first=true;
+      String result="";
+      for (String code : al.getTransferCode(end)){
+        st = al.getStationByCode(code);
+        stack = new Stack<String>();
+        time = 0;
+        while(true) {
+          stack.push(st.getCode());
+          //System.out.print(st.getName() + " " + st.getCode() + " " + ((st.getPrevious() == null)? "\n" : (al.getStationByCode(st.getPrevious()).getName() + st.getPrevious() + " " + al.getDistance(st.getPrevious(), st.getCode()) + "\n")));
+          if (st.getName().equals(start)) break;
+          time += al.getDistance(st.getPrevious(), st.getCode());
+          st = al.getStationByCode(st.getPrevious());
+        }
+        //System.out.println(time);
+        //System.out.println(mintime);
+        if (time < mintime) {
+          mintime = time;
+          beststack = new Stack<String>();
+          beststack.addAll(stack);
+        }
       }
-      while(!stack.isEmpty()) {
-        String s = stack.pop();
-        if (!stack.isEmpty() && s.equals(stack.peek())) {
+      while(!beststack.isEmpty()) {
+        String s = al.getStationByCode(beststack.pop()).getName();
+        if (!beststack.isEmpty() && s.equals(al.getStationByCode(beststack.peek()).getName())){
           if (!first) {
-            while(s.equals(stack.peek())) stack.pop();
-            if (!stack.isEmpty())
+            while(!beststack.isEmpty() && s.equals(al.getStationByCode(beststack.peek()).getName())) {
+              beststack.pop();
+              mintime -=5;
+            }
+            if (!beststack.isEmpty()) {
               s = "[" + s + "]";
+              mintime += 5;
+            }
           }
           else {
-            while(s.equals(stack.peek())) stack.pop();
+            while(!beststack.isEmpty() && s.equals(al.getStationByCode(beststack.peek()).getName())) {
+              beststack.pop();
+              mintime -= 5;
+            } 
             first = false;
           }
         }
-        result += s;
-        if (!stack.isEmpty()) result += " ";
+        bestresult += s;
+        if (!beststack.isEmpty()) bestresult += " ";
         first = false;
       }
-      System.out.println(result);
+      System.out.println(bestresult + "\n" + mintime);
     }
 
     public static Station getMin(HashSet<Station> unvisited) {
@@ -152,70 +192,22 @@ class Subway {
     }
 
     public static void findLeastTransferPath(String start, String end) {
-      unvisited = new HashSet<Station>();
-      for (Station st : al.getMap().values()) unvisited.add(st);
-      visited = new HashSet<Station>();
-      distances = new HashMap<Station, Integer>();
-      previous = new HashMap<Station, Station>();
-      Station newstation = al.getStationByName(start);
-      newstation.setDistance(0);
-      while (!unvisited.isEmpty() && !newstation.getName().equals(end)) {
-        newstation = getMin(unvisited);  
-        unvisited.remove(newstation);      
-        visited.add(newstation);
-        for (Station updatestation : unvisited) {
-          if (compareDistance(updatestation.getDistance(), addDistance(newstation.getDistance(), al.getDistance(newstation.getCode(), updatestation.getCode()))) > 0) {
-            updatestation.setDistance(addDistance(newstation.getDistance(), al.getDistance(newstation.getCode(), updatestation.getCode())));
-            updatestation.setPrevious(newstation.getCode());
-          } 
-        }
-      }
-      /*
-      System.out.println("----------");
-      for (Station st : al.getMap().values()) {
-        System.out.print(st.getName() + " " + st.getCode() + " " + ((st.getPrevious() == null)? "\n" : (al.getStationByCode(st.getPrevious()).getName() + "\n")));
-      }
-      System.out.println("----------");
-      */
-      Station st = al.getStationByName(end);
-      Stack<String> stack = new Stack<String>();
-      String result = "";
-      boolean first = true;
-      while(true) {
-        stack.push(st.getName());
-        if (st.getName().equals(start)) break;
-        st = al.getStationByCode(st.getPrevious());
-      }
-      while(!stack.isEmpty()) {
-        String s = stack.pop();
-        if (!stack.isEmpty() && s.equals(stack.peek())) {
-          if (!first) {
-            while(s.equals(stack.peek())) stack.pop();
-            if (!stack.isEmpty())
-              s = "[" + s + "]";
-          }
-          else {
-            while(s.equals(stack.peek())) stack.pop();
-            first = false;
-          }
-        }
-        result += s;
-        if (!stack.isEmpty()) result += " ";
-        first = false;
-      }
-      System.out.println(result);
+      
 
     }
     // return > 0 when a > b, < 0 when a < b, 0 when a = b
     public static int compareDistance(int a, int b) {
-      if (a == Integer.MAX_VALUE) return 1;
+      if (a == INF) {
+        if (b == INF) return 0;
+        else return 1;
+      }
       else {
-        if (b == Integer.MAX_VALUE) return -1;
+        if (b == INF) return -1;
         else return a-b;
       }
     }
     public static int addDistance(int a, int b) {
-      if (a == Integer.MAX_VALUE || b == Integer.MAX_VALUE) return Integer.MAX_VALUE;
+      if (a == INF || b == INF) return INF;
       else return a + b;
     }
 }
